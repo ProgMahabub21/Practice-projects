@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 
 #df = pd.read_csv('test1/student.csv')
 df = pd.read_csv('test1/hotel_bookings.csv')
@@ -60,3 +62,33 @@ for x in df.index:
 
 
 print(df)
+
+#count number of booking in a particular month
+
+count = df['arrival_date_month'].value_counts()
+print(count)
+
+fig , ax = plt.subplots()
+
+
+ax.set_xlabel('Month')
+ax.set_ylabel('Number of booking')
+ax.set_title('Number of booking in a particular month')
+ax.bar(count.index, count.values)
+plt.show()
+
+
+#count number of booking in a particular year
+
+count = df['arrival_date_year'].value_counts()
+print(count)
+
+
+# plot the data in a bar chart
+fig , ax = plt.subplots()
+ax.set_xlabel('Year')
+ax.set_ylabel('Number of booking')
+ax.set_title('Number of booking in a particular year')
+#ax.bar(count.index, count.values)
+#plt.show()
+
