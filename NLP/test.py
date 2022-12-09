@@ -1,10 +1,19 @@
-import nltk
+
+from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
+from nltk import word_tokenize,pos_tag
+from nltk.stem import WordNetLemmatizer
+from nltk import ne_chunk
+from nltk import RegexpParser
+from nltk.probability import FreqDist
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from statistics import mean
 #nltk.download('all-nltk')
 print("\n")
 
 # Creating token of words
 print("Creating token of words:")
-from nltk.tokenize import word_tokenize
+
 text="I am Mahabub !! I am a student of Computer Science and Engineering. I am doing my thesis on Natural Language Processing.My groupmates are Saharukh, Changu- Mangu"
 tokenize_word=word_tokenize(text)
 print(tokenize_word)
@@ -12,7 +21,7 @@ print("\n")
 
 # Stemming
 print("Stemming:")
-from nltk.stem import PorterStemmer
+
 words=["light","lighting","lights"]
 ps=PorterStemmer()
 for w in tokenize_word:
@@ -23,14 +32,14 @@ print("\n")
 
 #POS Tag
 print("POS Tag:")
-from nltk import word_tokenize,pos_tag
+
 result = pos_tag(word_tokenize(text))
 print(result)    
 
 
 #Lemmatiztion:Converts allverb forms into root word
 print("Lemmatiztion:Converts allverb forms into root word:")
-from nltk.stem import WordNetLemmatizer
+
 lem=WordNetLemmatizer()
 print(lem.lemmatize(result[0][0],pos="v"))
 print("\n")
@@ -38,13 +47,13 @@ print("\n")
 
 #Named Entity Recognition
 print("Named Entity Recognition:")
-from nltk import ne_chunk
+
 print(ne_chunk(pos_tag(word_tokenize(text))))
 print("\n")
 
 #Chunking
 print("Chunking:")
-from nltk import RegexpParser
+
 grammar = "NP: {<DT>?<JJ>*<NN>}"
 cp = RegexpParser(grammar)
 result = cp.parse(pos_tag(word_tokenize(text)))
@@ -54,7 +63,7 @@ print("\n")
 
 #find the frequency of words
 print("find the frequency of words:")
-from nltk.probability import FreqDist
+
 fdist = FreqDist(tokenize_word)
 print(fdist)
 print(fdist.most_common(2))
@@ -99,7 +108,7 @@ print("\n")
 #analysing the text whether its positive or negative
 
 print("analysing the text whether its positive or negative:")
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 sid = SentimentIntensityAnalyzer()
 a = "I am Mahabub !! I am a student of Computer Science and Engineering. I am doing my thesis on Natural Language Processing.My groupmates are Saharukh, Changu- Mangu"
 b = "Its dangerous to go alone! Take this. Its too bad that the book was stolen."
@@ -124,11 +133,31 @@ print("Neutral score:", sentiment_score['neu']*100 ,"%")
 print("Compound score:", sentiment_score['compound']*100 ,"%")
 print("\n")
 
+
+# this is to fix the problem of neural score along with psoitive and negative score
 print("Final positive or negative score of the text :")
 if(sentiment_score['compound'] >= 0.05):
-    print("Positive ,Score : ", round(sentiment_score['pos']*10))
+    if(sentiment_score['pos'] >= 0.8):
+        print("Very Positive ,Score: ", round(sentiment_score['pos']*10 + round(sentiment_score['neu']*10)/1.2))
+    elif(sentiment_score['pos'] >= 0.50):
+        print("Positive ,Score: ", round(sentiment_score['pos']*10 + round(sentiment_score['neu']*10)/3))
+    elif(sentiment_score['pos'] >= 0.25):
+        print("Positive ,Score: ", round(sentiment_score['pos']*10 + round(sentiment_score['neu']*10)/6))
+    elif(sentiment_score['pos'] >= 0.10):
+        print("Positive ,Score: ", round(sentiment_score['pos']*10 + round(sentiment_score['neu']*10)/9))
+    elif(sentiment_score['pos'] >= 0.05):
+        print("Positive ,Score: ", round(sentiment_score['pos']*10 + round(sentiment_score['neu']*10)/12))
 elif(sentiment_score['compound'] <= - 0.05):
-    print("Negative ,Score: ", round(sentiment_score['neg']*10))
+    if(sentiment_score['neg'] >= 0.75):
+        print("Very Negative ,Score: ", round(sentiment_score['neg']*10))
+    elif(sentiment_score['neg'] >= 0.50):
+        print("Negative ,Score: ", round(sentiment_score['neg']*10 + round(sentiment_score['neu']*10)/3))
+    elif(sentiment_score['neg'] >= 0.25):
+        print("Negative ,Score: ", round(sentiment_score['neg']*10 + round(sentiment_score['neu']*10)/6))
+    elif(sentiment_score['neg'] >= 0.10):
+        print("Negative ,Score: ", round(sentiment_score['neg']*10 + round(sentiment_score['neu']*10)/9))
+    elif(sentiment_score['neg']>=0.8):
+        print("Negative ,Score: ", round(sentiment_score['neg']*10 + round(sentiment_score['neu']*10)/1.2))
 else:
     print("Neutral ", end="")
 #positive or negative level of the text
